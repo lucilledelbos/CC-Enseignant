@@ -36,5 +36,23 @@ public class ChampollionJUnitTest {
                          "L'enseignant doit maintenant avoir 30 heures prévues pour l'UE 'uml'");		
 		
 	}
+	@Test
+	public void testEnSousService() {
+		untel.ajouteEnseignement(uml, 12, 10, 0);
+		untel.ajouteEnseignement(java, 12, 40, 10);
+		assertEquals(true, untel.enSousService(), "l'enseignant est en sous service");
+		
+	}
+	@Test
+	public void testResteAPlanifier() {
+		UE uml = new UE("test", 10, 10, 10);
+		assertEquals(182, untel.resteAPlanifier(uml, TypeIntervention.TD), "plus d'heures à planifier");
+		assertEquals(182, untel.resteAPlanifier(uml, TypeIntervention.TP), "plus d'heures à planifier");
+		assertEquals(182, untel.resteAPlanifier(uml, TypeIntervention.CM), "plus d'heures à planifier");
+
+
+		
+	}
+	
 	
 }
