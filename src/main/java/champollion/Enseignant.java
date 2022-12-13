@@ -1,9 +1,12 @@
 package champollion;
+import java.util.ArrayList;
 
 public class Enseignant extends Personne {
 
-    // TODO : rajouter les autres méthodes présentes dans le diagramme UML
-
+    private ArrayList<ServicePrevu> lesServicesP = new ArrayList();
+    private ArrayList<Intervention> lesInterventions = new ArrayList();
+    private ServicePrevu service;
+    
     public Enseignant(String nom, String email) {
         super(nom, email);
     }
@@ -17,8 +20,11 @@ public class Enseignant extends Personne {
      *
      */
     public int heuresPrevues() {
-        // TODO: Implémenter cette méthode
-        throw new UnsupportedOperationException("Pas encore implémenté");
+    	double heureTot=0;
+    	for (ServicePrevu sp : lesServicesP) {
+    		heureTot =+ sp.getVolumeCM()*1.5 + sp.getVolumeTD()*1 + sp.getVolumeTP()*0.75;
+    	} return (int)heureTot;
+        
     }
 
     /**
@@ -31,8 +37,13 @@ public class Enseignant extends Personne {
      *
      */
     public int heuresPrevuesPourUE(UE ue) {
-        // TODO: Implémenter cette méthode
-        throw new UnsupportedOperationException("Pas encore implémenté");
+    	double heureTot=0;
+    	
+    	for (ServicePrevu sp : lesServicesP) {
+    		if(ue==sp.getUe()) {
+    		heureTot =+ sp.getVolumeCM()*1.5 + sp.getVolumeTD()*1 + sp.getVolumeTP()*0.75;
+    	} 
+    	}return (int)heureTot;
     }
 
     /**
@@ -44,8 +55,47 @@ public class Enseignant extends Personne {
      * @param volumeTP le volume d'heures de TP
      */
     public void ajouteEnseignement(UE ue, int volumeCM, int volumeTD, int volumeTP) {
-        // TODO: Implémenter cette méthode
-        throw new UnsupportedOperationException("Pas encore implémenté");
+    	if (volumeCM<0 || volumeTP<0 || volumeTD<0) {
+    		throw new IllegalArgumentException("les valeurs sont négatives");
+    	}
+    	if(service == null) {
+    	 service = new ServicePrevu(volumeCM, volumeTD, volumeTP, ue);
+    	 lesServicesP.add(service);
+    	}else {
+    		service.setVolumeCM(volumeCM + service.getVolumeCM());
+    		service.setVolumeTD(volumeTD + service.getVolumeTD());
+    		service.setVolumeTP(volumeTP + service.getVolumeTP());
+
+    	}
+    }
+    
+    public boolean enSousService() {
+    	if (heuresPrevues()<192) {
+    		return true;
+    	}else {
+    		return false;
+    	}
+    	
+    }
+    public void ajouteIntervention(Intervention intervention) {
+    	lesInterventions.add(intervention);
+    	
+    	
+    }
+    public int resteAPlanifier(UE ue, TypeIntervention type) {
+    	int resultat=0;
+    	if (type == TypeIntervention.TD) {
+    		resultat = (192-ue.getHeuresTD());
+    	}
+    	if (type == TypeIntervention.TP) {
+    		resultat = (192-ue.getHeuresTP());
+    	}
+    	if (type == TypeIntervention.CM) {
+    		resultat = (192-ue.getHeuresCM());
+    	}
+    	if(resultat<0) {
+    		resultat=0;
+    	}return resultat;
     }
 
 }
